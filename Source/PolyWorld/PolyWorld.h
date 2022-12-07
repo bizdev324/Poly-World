@@ -119,6 +119,8 @@ struct FPolymonInfo : public FTableRowBase
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		int32 Level;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
+		int32 BattleEXP;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		int32 Health;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		int32 HealthGenes;
@@ -153,3 +155,4 @@ struct FPolymonInfo : public FTableRowBase
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		TArray<FActionInfo> ActionList;
 };
+

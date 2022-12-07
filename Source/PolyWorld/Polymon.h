@@ -29,11 +29,13 @@ protected:
 
 public:	
 	virtual void PossessedBy(AController* NewController) override;
-
+	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* Camera;
+	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
+	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 	class ABattlePC* OwnerPC;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Polymon")
@@ -46,14 +48,14 @@ public:
 	int32 FreezedPolydust = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 	bool bIsDefending = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
+	FActionInfo DefendingAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Polymon")
 	bool bIsDead = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Polymon")
 	bool bCanPlay = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Polymon")
 	int32 ActionIndex;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-	float DefendingRatio = 1.f;
 
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable, Category = "Polymon")
 	void MC_SetModel();
@@ -63,6 +65,8 @@ public:
 	float GetHealthRatio() const { return CurrentHealth / (float)PolymonInfo.Health; };
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	void EndDefending();
+	UFUNCTION(BlueprintCallable, Category = "Polymon")
+	float GetDefendingRatio();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
 	FTimerHandle TPolydustGenerationHandle;

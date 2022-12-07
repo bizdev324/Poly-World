@@ -83,7 +83,7 @@ public:
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_OnPolymonDeath(bool bIsPlayer);
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
-	void CL_StartSelecting();
+	void CL_StartSelecting(bool bIsPlayerWon);
 
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	void RemovePolymons();

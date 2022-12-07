@@ -200,14 +200,14 @@ void ABattlePC::RemovePolymons()
 	Opponent->SpawnedPolymon->Destroy();
 }
 
-void ABattlePC::CL_OnPolymonDeath_Implementation(bool bIsPlayer)
+void ABattlePC::CL_OnPolymonDeath_Implementation(bool bIsPlayerDeath)
 {
-	if (bIsPlayer)
+	if (bIsPlayerDeath)
 	{
 		AvailablePolymons[SelectedPolymonIndex] = false;
 	}
-	CL_StartSelecting();
-	BattleHUDRef->DestroyCapsule(bIsPlayer);
+	CL_StartSelecting(!bIsPlayerDeath);
+	BattleHUDRef->DestroyCapsule(bIsPlayerDeath);
 }
 
 void ABattlePC::SR_OnBattleTimerOut_Implementation()
@@ -221,10 +221,14 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 		if (SpawnedPolymon->CurrentHealth > Opponent->SpawnedPolymon->CurrentHealth)
 		{
 			WonRounds++;
+			CL_StartSelecting(true);
+			Opponent->CL_StartSelecting(false);
 		}
 		else
 		{
 			Opponent->WonRounds++;
+			CL_StartSelecting(false);
+			Opponent->CL_StartSelecting(true);
 		}
 		// Save Polymons Remaining Health
 		Opponent->PolymonsRemainingHealth[Opponent->SelectedPolymonIndex] = Opponent->SpawnedPolymon->CurrentHealth;
@@ -232,12 +236,10 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 		// Remove Polymons & Start Selecting
 		FTimerHandle timer;
 		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RemovePolymons, 3.f, false);
-		CL_StartSelecting();
-		Opponent->CL_StartSelecting();
 	}
 }
 
-void ABattlePC::CL_StartSelecting_Implementation()
+void ABattlePC::CL_StartSelecting_Implementation(bool bIsPlayerWon)
 {
-	BattleHUDRef->StartSelecting(AvailablePolymons);
+	BattleHUDRef->StartSelecting(AvailablePolymons, bIsPlayerWon);
 }

@@ -12,18 +12,20 @@ APolymon::APolymon()
 	PrimaryActorTick.bCanEverTick = true;
 	SetReplicates(true);
 	SetReplicateMovement(true);
+	bUseControllerRotationYaw = false;
+	//
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetMesh());
-
+	SpringArm->SetRelativeLocation(FVector(10.f, 170.f, 95.f));
+	SpringArm->SetRelativeRotation(FRotator(-5.f, 50.f, 0.f));
+	SpringArm->TargetArmLength = 550;
+	//
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-
-	GetMesh()->SetRelativeLocation(FVector(0, 0, -90.f));
-	SpringArm->SetRelativeLocation(FVector(0, 200.f, 160.f));
-	SpringArm->TargetArmLength = 550;
-	bUseControllerRotationYaw = false;
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Camera->SetFieldOfView(70.f);
 }
 
 void APolymon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -106,7 +108,6 @@ void APolymon::StopPolydustGenerationTimer_Implementation()
 void APolymon::EndDefending()
 {
 	bIsDefending = false;
-	DefendingRatio = 1.f;
 	UE_LOG(LogTemp, Warning, TEXT("Stopped Defending"));
 }
 
@@ -165,7 +166,7 @@ void APolymon::PhysicalAttack(const FActionInfo& ActionInfo)
 		float POLYATTACK = (float)PolymonInfo.Attack;
 		float OPPONENTDEFENCE = (float)Opp.Defense;
 		float TYPE1EFFECTIVE = GetTypeEffectivness(Opp);
-		float OPPONENTDEFENDING = OwnerPC->Opponent->SpawnedPolymon->DefendingRatio;
+		float OPPONENTDEFENDING = OwnerPC->Opponent->SpawnedPolymon->GetDefendingRatio();
 		float DamageApplied = OPPONENTDEFENDING * (((((((2.f * POLYLEVEL * CRITICALHIT) / 5.f) + 2.f) * ATTACKPOWER * (POLYATTACK / OPPONENTDEFENCE)) / 50.f) + 2.f) * TYPE1EFFECTIVE * RANDOM);
 		FPointDamageEvent DamageEvent(DamageApplied, FHitResult(), FVector(), nullptr);
 		OwnerPC->Opponent->SpawnedPolymon->TakeDamage(DamageApplied, DamageEvent, OwnerPC, this);
@@ -176,7 +177,6 @@ void APolymon::PhysicalAttack(const FActionInfo& ActionInfo)
 
 void APolymon::SpecialAttack(const FActionInfo& ActionInfo)
 {
-	// Play Action Animation
 	bool success = FMath::FRand() * 100.f <= ActionInfo.Accuracy;
 	if (success)
 	{
@@ -189,7 +189,7 @@ void APolymon::SpecialAttack(const FActionInfo& ActionInfo)
 		float POLYATTACK = (float)PolymonInfo.SpecialAttack;
 		float OPPONENTDEFENCE = (float)Opp.SpecialDefense;
 		float TYPE1EFFECTIVE = GetTypeEffectivness(Opp);
-		float OPPONENTDEFENDING = OwnerPC->Opponent->SpawnedPolymon->DefendingRatio;
+		float OPPONENTDEFENDING = OwnerPC->Opponent->SpawnedPolymon->GetDefendingRatio();
 		float DamageApplied = OPPONENTDEFENDING * (((((((2.f * POLYLEVEL * CRITICALHIT) / 5.f) + 2.f) * ATTACKPOWER * (POLYATTACK / OPPONENTDEFENCE)) / 50.f) + 2.f) * TYPE1EFFECTIVE * RANDOM);
 		FPointDamageEvent DamageEvent(DamageApplied, FHitResult(),FVector(),nullptr);
 		OwnerPC->Opponent->SpawnedPolymon->TakeDamage(DamageApplied, DamageEvent, OwnerPC, this);
@@ -197,29 +197,36 @@ void APolymon::SpecialAttack(const FActionInfo& ActionInfo)
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Attack Failed"));
 }
+
+float APolymon::GetDefendingRatio()
+{
+	if (bIsDefending)
+	{
+		bool success = FMath::FRand() * 100.f <= DefendingAction.Accuracy;
+		if (success)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Reduced Damage"));
+			return 1.f - FMath::FRandRange((float)DefendingAction.MinEfficiency, (float)DefendingAction.MaxEfficiency) / 100.f;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Fail Defending"));
+	}
+	return 1.f;
+}
 void APolymon::Defense(const FActionInfo& ActionInfo)
 {
-	// Play Action Animation
-	bool success = FMath::FRand() * 100.f <= ActionInfo.Accuracy;
-	if (success)
-	{
-		DefendingRatio = 1.f - FMath::FRandRange((float)ActionInfo.MinEfficiency, (float)ActionInfo.MaxEfficiency) / 100.f;
-		bIsDefending = true;
-		GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
-		UE_LOG(LogTemp, Warning, TEXT("Defending"));
-	}
+	bIsDefending = true;
+	DefendingAction = ActionInfo;
+	GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
+	UE_LOG(LogTemp, Warning, TEXT("Defending"));
+
 }
 void APolymon::SpecialDefense(const FActionInfo& ActionInfo)
 {
-	// Play Action Animation
-	bool success = FMath::FRand() * 100.f <= ActionInfo.Accuracy;
-	if (success)
-	{
-		DefendingRatio = 1.f - FMath::FRandRange((float)ActionInfo.MinEfficiency, (float)ActionInfo.MaxEfficiency) / 100.f;
-		bIsDefending = true;
-		GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
-		UE_LOG(LogTemp, Warning, TEXT("Defending"));
-	}
+	bIsDefending = true;
+	DefendingAction = ActionInfo;
+	GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
+	UE_LOG(LogTemp, Warning, TEXT("Defending"));
+
 }
 void APolymon::Stun(const FActionInfo& ActionInfo)
 {
@@ -236,10 +243,11 @@ void APolymon::Stun(const FActionInfo& ActionInfo)
 
 float APolymon::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Damage Applied: %f"), DamageAmount);
 	CurrentHealth = FMath::Clamp(CurrentHealth-DamageAmount, 0.f,(float) PolymonInfo.Health);
 	OwnerPC->CL_UpdatePlayerHealth(CurrentHealth/ PolymonInfo.Health);
 	OwnerPC->Opponent->CL_UpdateOpponentHealth(CurrentHealth / PolymonInfo.Health);
-	UE_LOG(LogTemp, Warning, TEXT("Damage Applied: %f"), DamageAmount);
+	// Check Death
 	if (CurrentHealth <= 0.f)
 	{
 		// Death
@@ -247,13 +255,19 @@ float APolymon::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		bCanPlay = false;
 		OwnerPC->Opponent->bCanPlay = false;
 		OwnerPC->OnPolymonDeath();
+		return 1;
+	}
+	if (PolymonInfo.HitMontage != nullptr)
+	{
+		MC_PlayMontage(PolymonInfo.HitMontage);
+		bCanPlay = false;
 	}
 	return 1;
 }
 
 void APolymon::MC_PlayMontage_Implementation(UAnimMontage* ActionMontage)
 {
-	PlayAnimMontage(ActionMontage);
+	PlayAnimMontage(ActionMontage, 1.f, TEXT("Default"));
 }
 
 void APolymon::SR_StartAction_Implementation(int32 Index)
