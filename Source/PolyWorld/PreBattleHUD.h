@@ -17,9 +17,15 @@ class POLYWORLD_API UPreBattleHUD : public UUserWidget
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
-	void SetAvailablePolymonsImages();
+	void SetPlayerInfo(const FString& PlayerName, const TArray<FPolymonInfo>& PlayerPolymons);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
-	void SetOpponentPolymonsImages(const TArray<FPolymonInfo>& OpponentPolymons);
+	void SetOpponentInfo(const FString& OpponentName, const TArray<FPolymonInfo>& OpponentPolymons);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
+	void SetOpponentReady(bool bIsReady);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetPlayerReady(bool bIsReady);
 
 };

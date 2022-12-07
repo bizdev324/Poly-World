@@ -17,19 +17,22 @@ void APreBattleGM::OnPostLogin(AController* NewPlayer)
 		Player2 = PC;
 		PC->Opponent = Player1;
 		Player1->Opponent = Player2;
+		Player1->CL_ShowHUD();
+		Player2->CL_ShowHUD();
 	}
 }
 
-void APreBattleGM::CheckPlayersReady()
+void APreBattleGM::CheckPlayersReady(bool bIsReady)
 {
-	PlayersReady++;
+	
+	PlayersReady+= bIsReady? 1 : -1;
 	if (PlayersReady >= 2)
 	{
-
+		StartBattle();
 	}
 }
 
 void APreBattleGM::StartBattle_Implementation()
 {
-
+	GetWorld()->ServerTravel(BattleMapPath);
 }

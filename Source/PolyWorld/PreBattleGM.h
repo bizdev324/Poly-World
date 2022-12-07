@@ -17,11 +17,13 @@ class POLYWORLD_API APreBattleGM : public AGameModeBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
-		APreBattlePC* Player1;
+	APreBattlePC* Player1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
-		APreBattlePC* Player2;
+	APreBattlePC* Player2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
-		int32 PlayersReady = 0;
+	int32 PlayersReady = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle")
+	FString BattleMapPath;
 
 
 protected:
@@ -29,8 +31,8 @@ protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Polymon")
-		void StartBattle();
+	void StartBattle();
 public:
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
-		void CheckPlayersReady();
+	void CheckPlayersReady(bool bIsReady);
 };

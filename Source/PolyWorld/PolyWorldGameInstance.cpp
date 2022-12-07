@@ -19,6 +19,11 @@ TArray<FPolymonInfo> UPolyWorldGameInstance::GetAvailablePolymons()
 	return AvailablePolymons;
 }
 
+FPlayerInfo UPolyWorldGameInstance::GetPlayerInfo()
+{
+	return PlayerInfo;
+}
+
 void UPolyWorldGameInstance::SR_GenerateNewPolymonInfo_Implementation(const FPolymonInfo& polymonTemplate, const FPlayerInfo& Player)
 {
 	// Prepare Data

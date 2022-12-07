@@ -28,9 +28,14 @@ public:
 	// Selected 3 Polymons
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	TArray<FPolymonInfo> SelectedPolymons;
-
+	
+	//
+	UFUNCTION(BlueprintCallable, Category = "Native")
+	FPlayerInfo GetPlayerInfo();
+	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
 	FPolymonInfo GetSelectedPolymon(int32 Index);
+	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
 	TArray<FPolymonInfo> GetAvailablePolymons();
 

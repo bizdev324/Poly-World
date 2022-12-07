@@ -2,13 +2,28 @@
 
 
 #include "PreBattleHUD.h"
+#include "PreBattlePC.h"
 
-void UPreBattleHUD::SetAvailablePolymonsImages_Implementation()
+void UPreBattleHUD::SetPlayerInfo_Implementation(const FString& PlayerName, const TArray<FPolymonInfo>& PlayerPolymons)
 {
 
 }
 
-void UPreBattleHUD::SetOpponentPolymonsImages_Implementation(const TArray<FPolymonInfo>& OpponentPolymons)
+void UPreBattleHUD::SetOpponentInfo_Implementation(const FString& OpponentName, const TArray<FPolymonInfo>& OpponentPolymons)
 {
 
+}
+
+void UPreBattleHUD::SetOpponentReady_Implementation(bool bIsReady)
+{
+
+}
+
+void UPreBattleHUD::SetPlayerReady(bool bIsReady)
+{
+	APreBattlePC* PC = Cast<APreBattlePC>(GetOwningPlayer());
+	if (PC != nullptr)
+	{
+		PC->SR_SetOpponentReady(bIsReady);
+	}
 }
