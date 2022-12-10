@@ -94,10 +94,10 @@ void APolymon::MC_SetModel_Implementation()
 	SetModel();
 }
 
-void APolymon::StartPolydustGenerationTimer_Implementation()
+void APolymon::StartPolydustGenerationTimer_Implementation(float Seconds)
 {
 	bCanPlay = true;
-	GetWorldTimerManager().SetTimer(TPolydustGenerationHandle, this, &APolymon::AddPolydust, 2.8,true);
+	GetWorldTimerManager().SetTimer(TPolydustGenerationHandle, this, &APolymon::AddPolydust, Seconds,true);
 }
 
 void APolymon::StopPolydustGenerationTimer_Implementation()

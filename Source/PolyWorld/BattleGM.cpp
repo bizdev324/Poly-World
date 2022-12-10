@@ -40,8 +40,8 @@ void ABattleGM::SpawnPlayers_Implementation()
 
 void ABattleGM::StartBattle_Implementation()
 {
-	Player1->SpawnedPolymon->StartPolydustGenerationTimer();
-	Player2->SpawnedPolymon->StartPolydustGenerationTimer();
+	Player1->SpawnedPolymon->StartPolydustGenerationTimer(PolydustGenerationRate);
+	Player2->SpawnedPolymon->StartPolydustGenerationTimer(PolydustGenerationRate);
 	Player1->CL_StartBattle();
 	Player2->CL_StartBattle();
 }

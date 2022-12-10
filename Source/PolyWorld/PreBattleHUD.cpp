@@ -3,6 +3,7 @@
 
 #include "PreBattleHUD.h"
 #include "PreBattlePC.h"
+#include "PolyWorldGameInstance.h"
 
 void UPreBattleHUD::SetPlayerInfo_Implementation(const FString& PlayerName, const TArray<FPolymonInfo>& PlayerPolymons)
 {
@@ -25,5 +26,14 @@ void UPreBattleHUD::SetPlayerReady(bool bIsReady)
 	if (PC != nullptr)
 	{
 		PC->SR_SetOpponentReady(bIsReady);
+	}
+}
+
+void UPreBattleHUD::SetSelectedPolymons(const TArray<FPolymonInfo>& SelectedPolys)
+{
+	UPolyWorldGameInstance* PWGI = Cast<UPolyWorldGameInstance>(GetGameInstance());
+	if (PWGI != nullptr)
+	{
+		PWGI->SetSelectedPolymons(SelectedPolys);
 	}
 }

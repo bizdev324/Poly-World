@@ -16,12 +16,14 @@ class POLYWORLD_API ABattleGM : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Players")
 	ABattlePC* Player1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Players")
 	ABattlePC* Player2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Players")
 	int32 PlayersReady = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
+	float PolydustGenerationRate = 2.8f;
 
 	
 protected:

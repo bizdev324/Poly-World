@@ -73,7 +73,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
 	FTimerHandle TDefendingHandle;
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Polymon")
-	void StartPolydustGenerationTimer();
+	void StartPolydustGenerationTimer(float Seconds);
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category = "Polymon")
 	void StopPolydustGenerationTimer();
 	

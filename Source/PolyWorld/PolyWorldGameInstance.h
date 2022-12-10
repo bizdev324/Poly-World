@@ -37,6 +37,9 @@ public:
 	FPolymonInfo GetSelectedPolymon(int32 Index);
 	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
+	void SetSelectedPolymons(const TArray<FPolymonInfo>& SelectedPolys);
+	//
+	UFUNCTION(BlueprintCallable, Category = "Native")
 	TArray<FPolymonInfo> GetAvailablePolymons();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Native")

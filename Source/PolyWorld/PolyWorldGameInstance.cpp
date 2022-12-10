@@ -19,6 +19,11 @@ TArray<FPolymonInfo> UPolyWorldGameInstance::GetAvailablePolymons()
 	return AvailablePolymons;
 }
 
+void UPolyWorldGameInstance::SetSelectedPolymons(const TArray<FPolymonInfo>& SelectedPolys)
+{
+	SelectedPolymons = SelectedPolys;
+}
+
 FPlayerInfo UPolyWorldGameInstance::GetPlayerInfo()
 {
 	return PlayerInfo;

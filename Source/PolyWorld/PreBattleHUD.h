@@ -28,4 +28,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void SetPlayerReady(bool bIsReady);
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetSelectedPolymons(const TArray<FPolymonInfo>& SelectedPolys);
+
 };
