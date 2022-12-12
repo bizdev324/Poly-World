@@ -64,8 +64,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	float GetHealthRatio() const { return CurrentHealth / (float)PolymonInfo.Health; };
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
-	void EndDefending();
-	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	float GetDefendingRatio();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
@@ -87,10 +85,18 @@ public:
 	void SR_StartAction(int32 Index);
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable, Category = "Polymon")
 	void MC_PlayMontage(UAnimMontage* ActionMontage);
+	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_DoAction();
+	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_EndAction();
+	//
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
+	void SR_EndDefending();
+	//
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
+	void SR_EndHit();
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_SetHUDWithPolymon();
 	//

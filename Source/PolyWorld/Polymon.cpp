@@ -105,12 +105,6 @@ void APolymon::StopPolydustGenerationTimer_Implementation()
 	TPolydustGenerationHandle.Invalidate();
 }
 
-void APolymon::EndDefending()
-{
-	bIsDefending = false;
-	UE_LOG(LogTemp, Warning, TEXT("Stopped Defending"));
-}
-
 void APolymon::AddPolydust_Implementation()
 {
 	if (FreezedPolydust > 0)
@@ -216,7 +210,6 @@ void APolymon::Defense(const FActionInfo& ActionInfo)
 {
 	bIsDefending = true;
 	DefendingAction = ActionInfo;
-	GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
 	UE_LOG(LogTemp, Warning, TEXT("Defending"));
 
 }
@@ -224,7 +217,6 @@ void APolymon::SpecialDefense(const FActionInfo& ActionInfo)
 {
 	bIsDefending = true;
 	DefendingAction = ActionInfo;
-	GetWorldTimerManager().SetTimer(TDefendingHandle, this, &APolymon::EndDefending, ActionInfo.Duration, false);
 	UE_LOG(LogTemp, Warning, TEXT("Defending"));
 
 }
@@ -270,27 +262,6 @@ void APolymon::MC_PlayMontage_Implementation(UAnimMontage* ActionMontage)
 	PlayAnimMontage(ActionMontage, 1.f, TEXT("Default"));
 }
 
-void APolymon::SR_StartAction_Implementation(int32 Index)
-{
-	if (bCanPlay && CurrentPolydust >= PolymonInfo.ActionList[ActionIndex].PolydustCost)
-	{
-		CurrentPolydust -= PolymonInfo.ActionList[ActionIndex].PolydustCost;
-		CL_UpdatePolydust(CurrentPolydust);
-		//
-		ActionIndex = Index;
-		if (PolymonInfo.ActionList[ActionIndex].ActionMontage != nullptr)
-		{
-			MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage);
-			bCanPlay = false;
-			return;
-		}
-		else
-		{
-			SR_DoAction();
-		}
-	}
-}
-
 void APolymon::SR_DoAction_Implementation()
 {
 	switch (PolymonInfo.ActionList[ActionIndex].Type)
@@ -316,7 +287,45 @@ void APolymon::SR_DoAction_Implementation()
 	}
 }
 
+void APolymon::SR_StartAction_Implementation(int32 Index)
+{
+	if (bCanPlay && CurrentPolydust >= PolymonInfo.ActionList[ActionIndex].PolydustCost)
+	{
+		CurrentPolydust -= PolymonInfo.ActionList[ActionIndex].PolydustCost;
+		CL_UpdatePolydust(CurrentPolydust);
+		//
+		ActionIndex = Index;
+		bCanPlay = false;
+		if (PolymonInfo.ActionList[ActionIndex].ActionMontage != nullptr)
+		{
+			MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage);
+			return;
+		}
+		else
+		{
+			SR_DoAction();
+		}
+	}
+}
+
 void APolymon::SR_EndAction_Implementation()
 {
 	bCanPlay = true;
+	UE_LOG(LogTemp, Warning, TEXT("Attack Ended"));
+}
+
+void APolymon::SR_EndDefending_Implementation()
+{
+	bIsDefending = false;
+	bCanPlay = true;
+	UE_LOG(LogTemp, Warning, TEXT("Defend Ended"));
+}
+
+void APolymon::SR_EndHit_Implementation()
+{
+	if (!bIsDefending)
+	{
+		bCanPlay = true;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Hit Ended"));
 }
