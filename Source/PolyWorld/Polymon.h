@@ -80,11 +80,16 @@ public:
 
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_UpdatePolydust(int32 NewPolydust);
+	// Playing Montage
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable, Category = "Polymon")
+	void MC_PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName);
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
+	void OC_PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName);
+	UFUNCTION(BlueprintCallable, Category = "Polymon")
+	void PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName);
 	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_StartAction(int32 Index);
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable, Category = "Polymon")
-	void MC_PlayMontage(UAnimMontage* ActionMontage);
 	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_DoAction();
@@ -97,6 +102,7 @@ public:
 	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_EndHit();
+	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_SetHUDWithPolymon();
 	//

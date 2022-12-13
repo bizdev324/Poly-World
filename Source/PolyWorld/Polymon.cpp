@@ -203,6 +203,7 @@ float APolymon::GetDefendingRatio()
 			return 1.f - FMath::FRandRange((float)DefendingAction.MinEfficiency, (float)DefendingAction.MaxEfficiency) / 100.f;
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Fail Defending"));
+		SR_EndDefending();
 	}
 	return 1.f;
 }
@@ -251,15 +252,30 @@ float APolymon::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	}
 	if (PolymonInfo.HitMontage != nullptr)
 	{
-		MC_PlayMontage(PolymonInfo.HitMontage);
+		MC_PlayMontage(PolymonInfo.HitMontage, TEXT("Default"));
 		bCanPlay = false;
+	}
+	if (bIsDefending)
+	{
+		MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("EndDefend"));
 	}
 	return 1;
 }
 
-void APolymon::MC_PlayMontage_Implementation(UAnimMontage* ActionMontage)
+void APolymon::MC_PlayMontage_Implementation(UAnimMontage* ActionMontage, FName StartSectionName)
 {
-	PlayAnimMontage(ActionMontage, 1.f, TEXT("Default"));
+	PlayMontage(ActionMontage, StartSectionName);
+}
+
+void APolymon::OC_PlayMontage_Implementation(UAnimMontage* ActionMontage, FName StartSectionName)
+{
+	PlayMontage(ActionMontage, StartSectionName);
+}
+
+void APolymon::PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName)
+{
+	PlayAnimMontage(ActionMontage, 1.f, StartSectionName);
+	
 }
 
 void APolymon::SR_DoAction_Implementation()
@@ -298,7 +314,15 @@ void APolymon::SR_StartAction_Implementation(int32 Index)
 		bCanPlay = false;
 		if (PolymonInfo.ActionList[ActionIndex].ActionMontage != nullptr)
 		{
-			MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage);
+			EActionType actionType = PolymonInfo.ActionList[ActionIndex].Type;
+			if (actionType == EActionType::Defense || actionType == EActionType::SpecialDefense)
+			{
+				OC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("Default"));
+			}
+			else
+			{
+				MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("Default"));
+			}
 			return;
 		}
 		else
