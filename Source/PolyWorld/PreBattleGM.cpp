@@ -2,6 +2,7 @@
 
 
 #include "PreBattleGM.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void APreBattleGM::OnPostLogin(AController* NewPlayer)
 {

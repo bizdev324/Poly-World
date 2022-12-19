@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.1",
+	"EngineAssociation": "{CE66EFE6-49FD-18C2-2EEC-9484A45FF350}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -16,6 +16,10 @@
 	],
 	"Plugins": [
 		{
+			"Name": "PlayFabGSDK",
+			"Enabled": true
+		},
+		{
 			"Name": "ModelingToolsEditorMode",
 			"Enabled": true,
 			"TargetAllowList": [
@@ -26,6 +30,25 @@
 			"Name": "PlayFab",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/217fdf581b784571af03d3fb6580368f"
+		},
+		{
+			"Name": "OnlineSubsystemPlayFab",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64"
+			],
+			"PlatformAllowList": [
+				"XboxOneGDK",
+				"WinGDK",
+				"XSX",
+				"Win64",
+				"Switch",
+				"PS4",
+				"PS5"
+			]
 		}
+	],
+	"TargetPlatforms": [
+		"Windows"
 	]
 }

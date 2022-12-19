@@ -8,7 +8,7 @@ public class PolyWorld : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"UMG", "PlayFabGSDK" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

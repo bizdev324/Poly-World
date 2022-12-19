@@ -22,11 +22,6 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
-	void CL_InitializeUI();
-	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
-	void CL_SetHUDWithPolymon();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UBattleHUD> BattleHUDClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
@@ -51,9 +46,17 @@ public:
 	//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 	int32 WonRounds = 0;
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
+	FPlayerInfo playerInfo;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Polymon")
 	APolymon* GetSpawnedPolymonRef() { return SpawnedPolymon; }
+
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
+		void CL_InitializeUI();
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
+		void CL_SetHUDWithPolymon();
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,8 +68,11 @@ public:
 	void SR_SpawnPolymon(const FPolymonInfo& polyInfo);
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	void SelectedPolymon(int32 Index);
-	UFUNCTION(Server, Reliable,BlueprintCallable, Category = "Polymon")
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_SelectedPolymon(int32 Index);
+	// Set PlayerInfo
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
+	void SR_SetPlayerInfo(const FPlayerInfo& pplayerInfo);
 	// Battle TimerOut
 	UFUNCTION(Server, Reliable,BlueprintCallable, Category = "Polymon")
 	void SR_OnBattleTimerOut();
@@ -82,11 +88,15 @@ public:
 	void OnPolymonDeath();
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_OnPolymonDeath(bool bIsPlayer);
+	//
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
-	void CL_StartSelecting(bool bIsPlayerWon);
+	void CL_EndRound(bool bIsPlayerWinner);
+	//
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
+	void CL_StartSelecting();
 
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
-	void RemovePolymons();
+	void RestartRound();
 
 	UFUNCTION()
 	void BindInputActions();

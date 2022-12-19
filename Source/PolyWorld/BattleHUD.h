@@ -31,7 +31,10 @@ public:
 	void UpdateOpponentHealth(float healthPercentage);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
-	void StartSelecting(const TArray<bool> &AvailablePolymons, bool bIsPlayerWon);
+	void StartSelecting(const TArray<bool> &AvailablePolymons);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
+	void EndRound(bool bIsPlayerWon);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
 	void OnOpponentFinishSelecting();

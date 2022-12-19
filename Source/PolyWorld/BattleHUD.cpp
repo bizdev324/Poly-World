@@ -25,7 +25,12 @@ void UBattleHUD::UpdateOpponentHealth_Implementation(float healthPercentage)
 
 }
 
-void UBattleHUD::StartSelecting_Implementation(const TArray<bool>& AvailablePolymons, bool bIsPlayerWon)
+void UBattleHUD::StartSelecting_Implementation(const TArray<bool>& AvailablePolymons)
+{
+
+}
+
+void UBattleHUD::EndRound_Implementation(bool bIsPlayerWon)
 {
 
 }

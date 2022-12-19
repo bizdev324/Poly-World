@@ -106,7 +106,13 @@ void ABattlePC::CL_SpawnPolymon_Implementation()
 	if (PWGI != nullptr)
 	{
 		SR_SpawnPolymon(PWGI->GetSelectedPolymon(SelectedPolymonIndex));
+		SR_SetPlayerInfo(PWGI->GetPlayerInfo());
 	}
+}
+
+void ABattlePC::SR_SetPlayerInfo_Implementation(const FPlayerInfo& pplayerInfo)
+{
+	this->playerInfo = pplayerInfo;
 }
 
 void ABattlePC::SR_SpawnPolymon_Implementation(const FPolymonInfo& polyInfo)
@@ -188,16 +194,34 @@ void ABattlePC::OnPolymonDeath()
 	// Save Opponent Polymon Remaining Health & Increase Won Rounds
 	Opponent->PolymonsRemainingHealth[Opponent->SelectedPolymonIndex] = Opponent->SpawnedPolymon->CurrentHealth;
 	Opponent->WonRounds++;
-	FTimerHandle timer;
-	GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RemovePolymons, 3.f, false);
 	CL_OnPolymonDeath(true);
-	Opponent->CL_OnPolymonDeath(false);	
+	Opponent->CL_OnPolymonDeath(false);
+	if (Opponent->WonRounds >= 3)
+	{
+		// Update Score 
+		Opponent->playerInfo.RankingPoints = Opponent->playerInfo.RankingPoints + 28;
+		int32 playerPoints = playerInfo.RankingPoints - 28;
+		playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
+		// Battle Ended
+		FTimerHandle timer;
+		FTimerDelegate TDelegate;
+		TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
+		GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+	}
+	else
+	{
+		// Round Ended
+		FTimerHandle timer;
+		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RestartRound, 3.f, false);
+	}
 }
 
-void ABattlePC::RemovePolymons()
+void ABattlePC::RestartRound()
 {
 	SpawnedPolymon->Destroy();
 	Opponent->SpawnedPolymon->Destroy();
+	CL_StartSelecting();
+	Opponent->CL_StartSelecting();
 }
 
 void ABattlePC::CL_OnPolymonDeath_Implementation(bool bIsPlayerDeath)
@@ -206,8 +230,13 @@ void ABattlePC::CL_OnPolymonDeath_Implementation(bool bIsPlayerDeath)
 	{
 		AvailablePolymons[SelectedPolymonIndex] = false;
 	}
-	CL_StartSelecting(!bIsPlayerDeath);
 	BattleHUDRef->DestroyCapsule(bIsPlayerDeath);
+	CL_EndRound(!bIsPlayerDeath);
+}
+
+void ABattlePC::CL_EndRound_Implementation(bool bIsPlayerWinner)
+{
+	BattleHUDRef->EndRound(bIsPlayerWinner);
 }
 
 void ABattlePC::SR_OnBattleTimerOut_Implementation()
@@ -217,29 +246,55 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 		// Disable Action
 		SpawnedPolymon->bCanPlay = false;
 		Opponent->SpawnedPolymon->bCanPlay = false;
+		// Save Polymons Remaining Health
+		Opponent->PolymonsRemainingHealth[Opponent->SelectedPolymonIndex] = Opponent->SpawnedPolymon->CurrentHealth;
+		PolymonsRemainingHealth[SelectedPolymonIndex] = SpawnedPolymon->CurrentHealth;
 		// Decide Winner for the Round
 		if (SpawnedPolymon->CurrentHealth > Opponent->SpawnedPolymon->CurrentHealth)
 		{
 			WonRounds++;
-			CL_StartSelecting(true);
-			Opponent->CL_StartSelecting(false);
+			CL_EndRound(true);
+			Opponent->CL_EndRound(false);
 		}
 		else
 		{
 			Opponent->WonRounds++;
-			CL_StartSelecting(false);
-			Opponent->CL_StartSelecting(true);
+			CL_EndRound(false);
+			Opponent->CL_EndRound(true);
 		}
-		// Save Polymons Remaining Health
-		Opponent->PolymonsRemainingHealth[Opponent->SelectedPolymonIndex] = Opponent->SpawnedPolymon->CurrentHealth;
-		PolymonsRemainingHealth[SelectedPolymonIndex] = SpawnedPolymon->CurrentHealth;
-		// Remove Polymons & Start Selecting
-		FTimerHandle timer;
-		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RemovePolymons, 3.f, false);
+		// 
+		if (WonRounds >= 3)
+		{
+			playerInfo.RankingPoints = playerInfo.RankingPoints + 28;
+			int32 OpponentPoints = Opponent->playerInfo.RankingPoints - 28;
+			Opponent->playerInfo.RankingPoints = OpponentPoints < 0 ? 0 : OpponentPoints;
+			// Battle Ended
+			FTimerHandle timer;
+			FTimerDelegate TDelegate;
+			TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
+			GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+		}
+		else if (Opponent->WonRounds >= 3)
+		{
+			Opponent->playerInfo.RankingPoints = Opponent->playerInfo.RankingPoints + 28;
+			int32 playerPoints = playerInfo.RankingPoints - 28;
+			playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
+			// Battle Ended
+			FTimerHandle timer;
+			FTimerDelegate TDelegate;
+			TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
+			GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+		}
+		else
+		{
+			// Remove Polymons & Start Selecting
+			FTimerHandle timer;
+			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RestartRound, 3.f, false);
+		}
 	}
 }
 
-void ABattlePC::CL_StartSelecting_Implementation(bool bIsPlayerWon)
+void ABattlePC::CL_StartSelecting_Implementation()
 {
-	BattleHUDRef->StartSelecting(AvailablePolymons, bIsPlayerWon);
+	BattleHUDRef->StartSelecting(AvailablePolymons);
 }

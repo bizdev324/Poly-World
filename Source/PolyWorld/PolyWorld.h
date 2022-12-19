@@ -51,25 +51,25 @@ struct FActionInfo : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		FString Name;
+		FString Name = TEXT("");
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		EActionType Type;
+		EActionType Type = EActionType::PhysicalAttack;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 		UTexture2D* Image;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		int32 PolydustCost;
+		int32 PolydustCost = 0;
 		// Accuracy =OR= Chances for Defense
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		int32 Accuracy;
+		int32 Accuracy = 0;
 		// Power =OR= DustFreeze
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		int32 Power;
+		int32 Power = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		int32 MinEfficiency;
+		int32 MinEfficiency = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		int32 MaxEfficiency;
+		int32 MaxEfficiency = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		float Duration;
+		float Duration = 0.f;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 		class UAnimMontage* ActionMontage;
 };
@@ -80,17 +80,21 @@ struct FPlayerInfo : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	FString Name;
+	FString Name = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	UTexture2D* Image;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	int32 EXP;
+	int32 EXP = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	int32 Level;
+	int32 Level = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	int32 Wins;
+	int32 RankingPoints = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	int32 Losses;
+	int32 Wins = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	int32 Losses = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	float Ratio = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -99,17 +103,17 @@ struct FPolymonInfo : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		FString Name;
+		FString Name = TEXT("");
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		FString Description;
+		FString Description = TEXT("");
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		float Height;
+		float Height = 0.f;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		float Weight;
+		float Weight = 0.f;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		EPowerType Type;
+		EPowerType Type = EPowerType::Normal;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		EGenderType Gender;
+		EGenderType Gender = EGenderType::Male;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		UTexture2D* Image;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
@@ -117,37 +121,37 @@ struct FPolymonInfo : public FTableRowBase
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		TSubclassOf<UAnimInstance> AnimationBP;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 Level;
+		int32 Level = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 BattleEXP;
+		int32 BattleEXP = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 Health;
+		int32 Health = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 HealthGenes;
+		int32 HealthGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 Attack;
+		int32 Attack = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 AttackGenes;
+		int32 AttackGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 Defense;
+		int32 Defense = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 DefenseGenes;
+		int32 DefenseGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 SpecialAttack;
+		int32 SpecialAttack = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 SpecialAttackGenes;
+		int32 SpecialAttackGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 SpecialDefense;
+		int32 SpecialDefense = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 SpecialDefenseGenes;
+		int32 SpecialDefenseGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 Speed;
+		int32 Speed = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		int32 SpeedGenes;
+		int32 SpeedGenes = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		class UAnimMontage* HitMontage;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
-		FString EvolutionName;
+		FString EvolutionName = TEXT("");
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")
 		TArray<EPowerType> Strengths;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Polymon")

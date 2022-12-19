@@ -7,6 +7,7 @@
 #include "PolyWorld.h"
 #include "PolyWorldGameInstance.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogPlayFabGSDKGameInstance, Log, All);
 /**
  * 
  */
@@ -16,6 +17,26 @@ class POLYWORLD_API UPolyWorldGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+
+	virtual void Init() override;
+
+protected:
+	virtual void OnStart() override;
+
+	UFUNCTION()
+		void OnGSDKShutdown();
+
+	UFUNCTION()
+		bool OnGSDKHealthCheck();
+
+	UFUNCTION()
+		void OnGSDKServerActive();
+
+	UFUNCTION()
+		void OnGSDKReadyForPlayers();
+
+public:
+
 	// Player Info
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	FPlayerInfo PlayerInfo;
