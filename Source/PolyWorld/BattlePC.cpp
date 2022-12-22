@@ -11,7 +11,7 @@
 
 ABattlePC::ABattlePC()
 {
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void ABattlePC::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -19,6 +19,11 @@ void ABattlePC::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	//
 	DOREPLIFETIME(ABattlePC, SpawnedPolymon);
+}
+
+void ABattlePC::CL_PrintMsg_Implementation(const FString& Msg) const
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
 }
 
 void ABattlePC::CL_InitializeUI_Implementation()
@@ -203,17 +208,20 @@ void ABattlePC::OnPolymonDeath()
 		int32 playerPoints = playerInfo.RankingPoints - 28;
 		playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
 		// Battle Ended
-		FTimerHandle timer;
-		FTimerDelegate TDelegate;
-		TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
-		GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 	}
 	else
 	{
 		// Round Ended
-		FTimerHandle timer;
 		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RestartRound, 3.f, false);
 	}
+}
+
+void ABattlePC::CL_EndBattle_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Ending Battle by ClientTravel"));
+	UGameplayStatics::OpenLevel(this, TEXT("MainMenuMap"));
+	//ClientTravel(TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
 }
 
 void ABattlePC::RestartRound()
@@ -269,10 +277,7 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 			int32 OpponentPoints = Opponent->playerInfo.RankingPoints - 28;
 			Opponent->playerInfo.RankingPoints = OpponentPoints < 0 ? 0 : OpponentPoints;
 			// Battle Ended
-			FTimerHandle timer;
-			FTimerDelegate TDelegate;
-			TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
-			GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 		}
 		else if (Opponent->WonRounds >= 3)
 		{
@@ -280,15 +285,11 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 			int32 playerPoints = playerInfo.RankingPoints - 28;
 			playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
 			// Battle Ended
-			FTimerHandle timer;
-			FTimerDelegate TDelegate;
-			TDelegate.BindUFunction(this, FName("ClientTravel"), TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
-			GetWorldTimerManager().SetTimer(timer, TDelegate, 3.f, false);
+			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 		}
 		else
 		{
 			// Remove Polymons & Start Selecting
-			FTimerHandle timer;
 			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::RestartRound, 3.f, false);
 		}
 	}

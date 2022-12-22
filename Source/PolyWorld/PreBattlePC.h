@@ -23,6 +23,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	UPreBattleHUD* PreBattleHUDRef;
 
+
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Msg")
+	void CL_PrintMsg(const FString& Msg) const;
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Travel")
+	void CL_EndBattle();
 	//
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_ShowHUD();

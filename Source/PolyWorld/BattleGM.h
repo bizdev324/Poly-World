@@ -25,8 +25,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
 	float PolydustGenerationRate = 2.8f;
 
-	
+	UPROPERTY()
+	FTimerHandle ExitTimer;
+
+	UFUNCTION()
+	void StartClosingServer();
+	UFUNCTION()
+	void CloseServer();
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void MC_BroadcastMsg(const FString& Msg);
+
+	virtual void Logout(AController* Exiting) override;
+
 protected:
+	virtual void BeginPlay() override;
+
 	/** Called as part of DispatchPostLogin */
 	virtual void OnPostLogin(AController* NewPlayer) override;
 

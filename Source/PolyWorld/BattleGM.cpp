@@ -2,7 +2,43 @@
 
 
 #include "BattleGM.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "GenericPlatform/GenericPlatformMisc.h"
+#include "TimerManager.h"
+
+void ABattleGM::BeginPlay()
+{
+	Super::BeginPlay();
+	//
+	if (Player2 == nullptr)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ExitTimer, this, &ABattleGM::StartClosingServer, 60.f, false);
+		MC_BroadcastMsg(TEXT("Started Closing Timer"));
+	}
+}
+
+void ABattleGM::MC_BroadcastMsg_Implementation(const FString& Msg)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
+}
+
+void ABattleGM::CloseServer()
+{
+	FGenericPlatformMisc::RequestExit(true);
+}
+
+void ABattleGM::StartClosingServer()
+{
+	MC_BroadcastMsg(TEXT("Closing Server"));
+	if (Player1)
+	{
+		Player1->CL_EndBattle();
+	}
+	if (Player2)
+	{
+		Player2->CL_EndBattle();
+	}
+	GetWorld()->GetTimerManager().SetTimer(ExitTimer, this, &ABattleGM::CloseServer, 3.f, false);
+}
 
 void ABattleGM::OnPostLogin(AController* NewPlayer)
 {
@@ -16,11 +52,21 @@ void ABattleGM::OnPostLogin(AController* NewPlayer)
 	}
 	else
 	{
+		GetWorldTimerManager().ClearTimer(ExitTimer);
+		ExitTimer.Invalidate();
+		MC_BroadcastMsg(TEXT("InValidating & Clearing Exit Timer."));
 		Player2 = PC;
 		PC->PlayerIndex = 2;
 		PC->Opponent = Player1;
 		Player1->Opponent = Player2;
 	}
+
+}
+
+void ABattleGM::Logout(AController* Exiting)
+{
+	MC_BroadcastMsg(TEXT("Player Exiting"));
+	StartClosingServer();
 }
 
 void ABattleGM::CheckPlayersReady()

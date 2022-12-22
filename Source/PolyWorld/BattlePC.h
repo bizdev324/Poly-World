@@ -16,6 +16,10 @@ class POLYWORLD_API ABattlePC : public APlayerController
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY()
+	FTimerHandle timer;
+
 public:
 	// Sets default values for this character's properties
 	ABattlePC();
@@ -62,6 +66,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Msg")
+	void CL_PrintMsg(const FString& Msg) const;
+
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_SpawnPolymon();
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
@@ -78,8 +85,12 @@ public:
 	void SR_OnBattleTimerOut();
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_OnOpponentSelectedPolymon();
-	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
+	//
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Battle")
 	void CL_StartBattle();
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Battle")
+	void CL_EndBattle();
+
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_UpdatePlayerHealth(float HealthPercentage);
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")

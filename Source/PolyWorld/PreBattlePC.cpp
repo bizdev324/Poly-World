@@ -4,6 +4,20 @@
 #include "PreBattlePC.h"
 #include "PolyWorldGameInstance.h"
 #include "PreBattleGM.h"
+#include "Kismet/GameplayStatics.h"
+
+
+void APreBattlePC::CL_PrintMsg_Implementation(const FString& Msg) const
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
+}
+
+void APreBattlePC::CL_EndBattle_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Ending Battle by ClientTravel"));
+	UGameplayStatics::OpenLevel(this, TEXT("MainMenuMap"));
+	//ClientTravel(TEXT("MainMenuMap"), ETravelType::TRAVEL_Absolute);
+}
 
 void APreBattlePC::CL_ShowHUD_Implementation()
 {
