@@ -61,8 +61,20 @@ void ABattlePC::BeginPlay()
 			{
 				PolymonsRemainingHealth[i] = PWGI->GetSelectedPolymon(i).Health;
 			}
+			BattleHUDRef->SetPlayerInfo(PWGI->GetPlayerInfo(), PWGI->SelectedPolymons);
+			SR_SetOpponentInfo(PWGI->GetPlayerInfo(), PWGI->SelectedPolymons);
 		}
 	}
+}
+
+void ABattlePC::SR_SetOpponentInfo_Implementation(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons)
+{
+	Opponent->CL_SetOpponentInfo(OpponentInfo, OpponentPolymons);
+}
+
+void ABattlePC::CL_SetOpponentInfo_Implementation(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons)
+{
+	BattleHUDRef->SetOpponentInfo(OpponentInfo, OpponentPolymons);
 }
 
 void ABattlePC::BindInputActions()

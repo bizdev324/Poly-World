@@ -44,4 +44,10 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
 	void SetHUDwithPolymon(ABattlePC* PCRef);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
+	void SetPlayerInfo(const FPlayerInfo& PlayerInfo, const TArray<FPolymonInfo>& PlayerPolymons);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "UI")
+	void SetOpponentInfo(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons);
 };

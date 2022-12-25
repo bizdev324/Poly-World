@@ -49,3 +49,13 @@ void UBattleHUD::SetHUDwithPolymon_Implementation(ABattlePC* PCRef)
 {
 
 }
+
+void UBattleHUD::SetPlayerInfo_Implementation(const FPlayerInfo& PlayerInfo, const TArray<FPolymonInfo>& PlayerPolymons)
+{
+
+}
+
+void UBattleHUD::SetOpponentInfo_Implementation(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons)
+{
+
+}

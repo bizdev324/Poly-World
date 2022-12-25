@@ -58,9 +58,14 @@ public:
 	APolymon* GetSpawnedPolymonRef() { return SpawnedPolymon; }
 
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
-		void CL_InitializeUI();
+	void CL_InitializeUI();
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
-		void CL_SetHUDWithPolymon();
+	void CL_SetHUDWithPolymon();
+	// SetOpponetInfo
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
+	void SR_SetOpponentInfo(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons);
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
+	void CL_SetOpponentInfo(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons);
 
 protected:
 	virtual void BeginPlay() override;
