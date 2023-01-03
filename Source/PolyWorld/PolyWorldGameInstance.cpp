@@ -133,3 +133,12 @@ void UPolyWorldGameInstance::OnGSDKReadyForPlayers()
 	 */
 	UE_LOG(LogPlayFabGSDKGameInstance, Warning, TEXT("Finished Initialization - Moving to StandBy!"));
 }
+
+void UPolyWorldGameInstance::SavePlayerData_Implementation()
+{
+
+}
+void UPolyWorldGameInstance::LoadPlayerData_Implementation()
+{
+
+}

@@ -22,8 +22,6 @@ public:
 	ABattlePC* Player2;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Players")
 	int32 PlayersReady = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players")
-	float PolydustGenerationRate = 2.8f;
 
 	UPROPERTY()
 	FTimerHandle ExitTimer;

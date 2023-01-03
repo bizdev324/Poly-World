@@ -158,9 +158,9 @@ void ABattlePC::SR_SpawnPolymon_Implementation(const FPolymonInfo& polyInfo)
 	SpawnedPolymon->FinishSpawning(spawnTransform);
 }
 
-void ABattlePC::CL_StartBattle_Implementation()
+void ABattlePC::CL_StartBattle_Implementation(float BattleDuration)
 {
-	BattleHUDRef->StartBattleTimer(180.f);
+	BattleHUDRef->StartBattleTimer(BattleDuration);
 }
 
 void ABattlePC::Action1()
@@ -216,9 +216,9 @@ void ABattlePC::OnPolymonDeath()
 	if (Opponent->WonRounds >= 3)
 	{
 		// Update Score 
-		Opponent->playerInfo.RankingPoints = Opponent->playerInfo.RankingPoints + 28;
+		Opponent->CL_SaveNewRankingScore(Opponent->playerInfo.RankingPoints + 28);
 		int32 playerPoints = playerInfo.RankingPoints - 28;
-		playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
+		CL_SaveNewRankingScore(playerPoints < 0 ? 0 : playerPoints);
 		// Battle Ended
 		GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 	}
@@ -285,17 +285,17 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 		// 
 		if (WonRounds >= 3)
 		{
-			playerInfo.RankingPoints = playerInfo.RankingPoints + 28;
+			CL_SaveNewRankingScore(playerInfo.RankingPoints + 28);
 			int32 OpponentPoints = Opponent->playerInfo.RankingPoints - 28;
-			Opponent->playerInfo.RankingPoints = OpponentPoints < 0 ? 0 : OpponentPoints;
+			Opponent->CL_SaveNewRankingScore(OpponentPoints < 0 ? 0 : OpponentPoints);
 			// Battle Ended
 			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 		}
 		else if (Opponent->WonRounds >= 3)
 		{
-			Opponent->playerInfo.RankingPoints = Opponent->playerInfo.RankingPoints + 28;
+			Opponent->CL_SaveNewRankingScore(Opponent->playerInfo.RankingPoints + 28);
 			int32 playerPoints = playerInfo.RankingPoints - 28;
-			playerInfo.RankingPoints = playerPoints < 0 ? 0 : playerPoints;
+			CL_SaveNewRankingScore(playerPoints < 0 ? 0 : playerPoints);
 			// Battle Ended
 			GetWorldTimerManager().SetTimer(timer, this, &ABattlePC::CL_EndBattle, 3.f, false);
 		}
@@ -310,4 +310,14 @@ void ABattlePC::SR_OnBattleTimerOut_Implementation()
 void ABattlePC::CL_StartSelecting_Implementation()
 {
 	BattleHUDRef->StartSelecting(AvailablePolymons);
+}
+
+void ABattlePC::CL_SaveNewRankingScore_Implementation(int32 newScore)
+{
+	UPolyWorldGameInstance* PWGI = Cast<UPolyWorldGameInstance>(GetGameInstance());
+	if (PWGI != nullptr)
+	{
+		PWGI->PlayerInfo.RankingPoints = newScore;
+		PWGI->SavePlayerData();
+	}
 }

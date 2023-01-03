@@ -36,6 +36,11 @@ protected:
 		void OnGSDKReadyForPlayers();
 
 public:
+	// Title Data (from Server)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayfabTitleData")
+	float PolydustCount = 1.4f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayfabTitleData")
+	float BattleDuration = 180.f;
 
 	// Player Info
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
@@ -53,6 +58,11 @@ public:
 	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
 	FPlayerInfo GetPlayerInfo();
+	// SavePlayerData
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Playfab")
+	void SavePlayerData();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Playfab")
+	void LoadPlayerData();
 	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
 	FPolymonInfo GetSelectedPolymon(int32 Index);

@@ -3,6 +3,7 @@
 
 #include "BattleGM.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
+#include "PolyWorldGameInstance.h"
 #include "TimerManager.h"
 
 void ABattleGM::BeginPlay()
@@ -87,8 +88,12 @@ void ABattleGM::SpawnPlayers_Implementation()
 
 void ABattleGM::StartBattle_Implementation()
 {
-	Player1->SpawnedPolymon->StartPolydustGenerationTimer(PolydustGenerationRate);
-	Player2->SpawnedPolymon->StartPolydustGenerationTimer(PolydustGenerationRate);
-	Player1->CL_StartBattle();
-	Player2->CL_StartBattle();
+	UPolyWorldGameInstance* PWGI = Cast<UPolyWorldGameInstance>(GetGameInstance());
+	if (PWGI != nullptr)
+	{
+		Player1->SpawnedPolymon->StartPolydustGenerationTimer(PWGI->PolydustCount);
+		Player2->SpawnedPolymon->StartPolydustGenerationTimer(PWGI->PolydustCount);
+		Player1->CL_StartBattle(PWGI->BattleDuration);
+		Player2->CL_StartBattle(PWGI->BattleDuration);
+	}
 }

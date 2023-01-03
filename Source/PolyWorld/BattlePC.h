@@ -92,7 +92,7 @@ public:
 	void CL_OnOpponentSelectedPolymon();
 	//
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Battle")
-	void CL_StartBattle();
+	void CL_StartBattle(float BattleDuration);
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Battle")
 	void CL_EndBattle();
 
@@ -110,6 +110,9 @@ public:
 	//
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Polymon")
 	void CL_StartSelecting();
+	//
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Score")
+	void CL_SaveNewRankingScore(int32 newScore);
 
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	void RestartRound();

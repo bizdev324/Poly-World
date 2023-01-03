@@ -257,7 +257,7 @@ float APolymon::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	}
 	if (bIsDefending)
 	{
-		MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("EndDefend"));
+		MC_PlayMontage(PolymonInfo.DefenseMontage, TEXT("EndDefend"));
 	}
 	return 1;
 }
@@ -280,7 +280,7 @@ void APolymon::PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName)
 
 void APolymon::SR_DoAction_Implementation()
 {
-	switch (PolymonInfo.ActionList[ActionIndex].Type)
+	switch (PolymonInfo.ActionList[ActionIndex].ActionType)
 	{
 	case EActionType::PhysicalAttack:
 		PhysicalAttack(PolymonInfo.ActionList[ActionIndex]);
@@ -312,16 +312,18 @@ void APolymon::SR_StartAction_Implementation(int32 Index)
 		//
 		ActionIndex = Index;
 		bCanPlay = false;
-		if (PolymonInfo.ActionList[ActionIndex].ActionMontage != nullptr)
+		EActionType actionType = PolymonInfo.ActionList[ActionIndex].ActionType;
+		bool bIsDefense = actionType == EActionType::Defense || actionType == EActionType::SpecialDefense;
+		UAnimMontage* montage = bIsDefense? PolymonInfo.DefenseMontage : PolymonInfo.AttackMontage;
+		if (montage != nullptr)
 		{
-			EActionType actionType = PolymonInfo.ActionList[ActionIndex].Type;
 			if (actionType == EActionType::Defense || actionType == EActionType::SpecialDefense)
 			{
-				OC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("Default"));
+				OC_PlayMontage(montage, TEXT("Default"));
 			}
 			else
 			{
-				MC_PlayMontage(PolymonInfo.ActionList[ActionIndex].ActionMontage, TEXT("Default"));
+				MC_PlayMontage(montage, TEXT("Default"));
 			}
 			return;
 		}
