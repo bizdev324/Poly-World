@@ -89,7 +89,7 @@ public:
 	void PlayMontage(UAnimMontage* ActionMontage, FName StartSectionName);
 	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
-	void SR_StartAction(int32 Index);
+	void SR_StartAction(int32 ListIndex, const FActionInfo& ActionInfo);
 	//
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_DoAction();
@@ -123,6 +123,8 @@ public:
 	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
+	UFUNCTION()
+	int32 GetActionIndex(const FActionInfo& action);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -61,6 +61,10 @@ public:
 	void CL_InitializeUI();
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
 	void CL_SetHUDWithPolymon();
+	//
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
+	void CL_ChangeActionList(int32 ListIndex);
+
 	// SetOpponetInfo
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Polymon")
 	void SR_SetOpponentInfo(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons);
@@ -128,8 +132,4 @@ public:
 	void Action3();
 	UFUNCTION(BlueprintCallable, Category = "Polymon")
 	void Action4();
-	UFUNCTION(BlueprintCallable, Category = "Polymon")
-	void Action5();
-	UFUNCTION(BlueprintCallable, Category = "Polymon")
-	void Action6();
 };

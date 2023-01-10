@@ -11,8 +11,8 @@ enum class EActionType : uint8
 {
 	PhysicalAttack = 0 UMETA(DisplayName = "Attack"),
 	SpecialAttack = 1 UMETA(DisplayName = "Special Attack"),
-	SpecialDefense = 2     UMETA(DisplayName = "SpecialDefense"),
-	Defense = 3     UMETA(DisplayName = "Defensive"),
+	Defense = 2     UMETA(DisplayName = "Defensive"),
+	SpecialDefense = 3     UMETA(DisplayName = "SpecialDefense"),
 	Stun = 4  UMETA(DisplayName = "Stun")
 };
 
@@ -59,8 +59,6 @@ struct FActionInfo : public FTableRowBase
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 		EActionType ActionType = EActionType::PhysicalAttack;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
-		UTexture2D* Image;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 		int32 PolydustCost = 0;
 		// Power =OR= DustFreeze
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
@@ -73,6 +71,8 @@ struct FActionInfo : public FTableRowBase
 		int32 MaxEfficiency = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Action")
 		float Duration = 0.f;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		UTexture2D* Image;
 };
 
 USTRUCT(BlueprintType)
@@ -83,11 +83,11 @@ struct FPlayerInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	FString Name = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	UTexture2D* Image;
+	int32 ImageId = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	int32 EXP = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
-	int32 Level = 0;
+	int32 Level = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	int32 RankingPoints = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
@@ -96,6 +96,8 @@ struct FPlayerInfo : public FTableRowBase
 	int32 Losses = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	float Ratio = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+	UTexture2D* Image;
 };
 
 USTRUCT(BlueprintType)
@@ -103,9 +105,9 @@ struct FPolymonInfo : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
-		FString CharacterId = TEXT("");
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static ")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
+		int32 PolymonId = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		FString Name = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		FString Description = TEXT("");
@@ -115,56 +117,60 @@ struct FPolymonInfo : public FTableRowBase
 		float Weight = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		EPowerType Type = EPowerType::Normal;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		EGenderType Gender = EGenderType::Male;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		UTexture2D* Image;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		USkeletalMesh* Model;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		TSubclassOf<UAnimInstance> AnimationBP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 Level = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 BattleEXP = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 Health = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 HealthGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 Attack = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 AttackGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 Defense = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 DefenseGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 SpecialAttack = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 SpecialAttackGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 SpecialDefense = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 SpecialDefenseGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
-		int32 Speed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		int32 SpeedGenes = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		class UAnimMontage* AttackMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		class UAnimMontage* DefenseMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
-		class UAnimMontage* HitMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		FString EvolutionName = TEXT("");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		TArray<EPowerType> Strengths;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Static")
 		TArray<EPowerType> Weaknesses;
+	////////////////////////////////////////////////////////////////
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		EGenderType Gender = EGenderType::Male;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 Level = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 BattleEXP = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 Health = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 Attack = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 Defense = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 SpecialAttack = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 SpecialDefense = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
+		int32 Speed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique")
 		TArray<int32> ActionKeys;
+	////////////////////////////////////////////////////////////////
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		FString CharacterId = TEXT("");
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		UTexture2D* Image;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		USkeletalMesh* Model;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		TSubclassOf<UAnimInstance> AnimationBP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		class UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		class UAnimMontage* DefenseMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
+		class UAnimMontage* HitMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generated")
 		TArray<FActionInfo> ActionList;
 };

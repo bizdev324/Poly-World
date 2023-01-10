@@ -3,6 +3,7 @@
 
 #include "Polymon.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Containers/Array.h"
 #include "BattlePC.h"
 
 // Sets default values
@@ -303,12 +304,25 @@ void APolymon::SR_DoAction_Implementation()
 	}
 }
 
-void APolymon::SR_StartAction_Implementation(int32 Index)
+int32 APolymon::GetActionIndex(const FActionInfo& action)
 {
-	if (bCanPlay && CurrentPolydust >= PolymonInfo.ActionList[ActionIndex].PolydustCost)
+	for (int i = 0; i < PolymonInfo.ActionList.Num(); i++)
 	{
-		CurrentPolydust -= PolymonInfo.ActionList[ActionIndex].PolydustCost;
+		if (PolymonInfo.ActionList[i].Name == action.Name)
+			return i;
+	}
+	return -1;
+}
+
+void APolymon::SR_StartAction_Implementation(int32 ListIndex, const FActionInfo& ActionInfo)
+{
+	int32 Index = GetActionIndex(ActionInfo);
+
+	if (Index>=0 && bCanPlay && CurrentPolydust >= PolymonInfo.ActionList[Index].PolydustCost)
+	{
+		CurrentPolydust -= PolymonInfo.ActionList[Index].PolydustCost;
 		CL_UpdatePolydust(CurrentPolydust);
+		OwnerPC->CL_ChangeActionList(ListIndex);
 		//
 		ActionIndex = Index;
 		bCanPlay = false;

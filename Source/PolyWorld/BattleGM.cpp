@@ -46,22 +46,24 @@ void ABattleGM::OnPostLogin(AController* NewPlayer)
 	Super::OnPostLogin(NewPlayer);
 	//
 	ABattlePC* PC = Cast<ABattlePC>(NewPlayer);
-	if (Player1 == nullptr)
+	if (PC != nullptr)
 	{
-		Player1 = PC;
-		PC->PlayerIndex = 1;
+		if (Player1 == nullptr)
+		{
+			Player1 = PC;
+			PC->PlayerIndex = 1;
+		}
+		else
+		{
+			GetWorldTimerManager().ClearTimer(ExitTimer);
+			ExitTimer.Invalidate();
+			MC_BroadcastMsg(TEXT("InValidating & Clearing Exit Timer."));
+			Player2 = PC;
+			PC->PlayerIndex = 2;
+			PC->Opponent = Player1;
+			Player1->Opponent = Player2;
+		}
 	}
-	else
-	{
-		GetWorldTimerManager().ClearTimer(ExitTimer);
-		ExitTimer.Invalidate();
-		MC_BroadcastMsg(TEXT("InValidating & Clearing Exit Timer."));
-		Player2 = PC;
-		PC->PlayerIndex = 2;
-		PC->Opponent = Player1;
-		Player1->Opponent = Player2;
-	}
-
 }
 
 void ABattleGM::Logout(AController* Exiting)

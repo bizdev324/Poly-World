@@ -57,5 +57,24 @@ void UBattleHUD::SetPlayerInfo_Implementation(const FPlayerInfo& PlayerInfo, con
 
 void UBattleHUD::SetOpponentInfo_Implementation(const FPlayerInfo& OpponentInfo, const TArray<FPolymonInfo>& OpponentPolymons)
 {
+    
+}
 
+void UBattleHUD::SetActionButtons_Implementation(const TArray<FActionInfo>& newActionList)
+{
+
+}
+
+FActionInfo UBattleHUD::UseAction_Implementation(int32 Index)
+{
+    FActionInfo temp = ActionList[Index];
+    ActionList.RemoveAt(Index);
+    ActionList.Add(temp);
+    SetActionButtons(ActionList);
+    return temp;
+}
+
+FActionInfo UBattleHUD::GetActionByIndex_Implementation(int32 Index)
+{
+    return ActionList[Index];
 }

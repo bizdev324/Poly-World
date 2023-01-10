@@ -72,7 +72,4 @@ public:
 	//
 	UFUNCTION(BlueprintCallable, Category = "Native")
 	TArray<FPolymonInfo> GetAvailablePolymons();
-
-	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Native")
-	void SR_GenerateNewPolymonInfo(const FPolymonInfo& polymonTemplate, const FPlayerInfo& Player);
 };

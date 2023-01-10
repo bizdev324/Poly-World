@@ -43,7 +43,10 @@ void ABattlePC::CL_InitializeUI_Implementation()
 
 void ABattlePC::CL_SetHUDWithPolymon_Implementation()
 {
-	BattleHUDRef->SetHUDwithPolymon(this);
+	if (BattleHUDRef)
+	{
+		BattleHUDRef->SetHUDwithPolymon(this);
+	}
 }
 
 void ABattlePC::BeginPlay()
@@ -83,8 +86,6 @@ void ABattlePC::BindInputActions()
 	InputComponent->BindAction("Action2", IE_Pressed, this, &ABattlePC::Action2);
 	InputComponent->BindAction("Action3", IE_Pressed, this, &ABattlePC::Action3);
 	InputComponent->BindAction("Action4", IE_Pressed, this, &ABattlePC::Action4);
-	InputComponent->BindAction("Action5", IE_Pressed, this, &ABattlePC::Action5);
-	InputComponent->BindAction("Action6", IE_Pressed, this, &ABattlePC::Action6);
 }
 
 void ABattlePC::CL_UpdatePlayerHealth_Implementation(float HealthPercentage)
@@ -163,46 +164,41 @@ void ABattlePC::CL_StartBattle_Implementation(float BattleDuration)
 	BattleHUDRef->StartBattleTimer(BattleDuration);
 }
 
+void ABattlePC::CL_ChangeActionList_Implementation(int32 ListIndex)
+{
+	BattleHUDRef->UseAction(ListIndex);
+}
+
 void ABattlePC::Action1()
 {
 	if (SpawnedPolymon != nullptr)
 	{
-		SpawnedPolymon->SR_StartAction(0);
+		FActionInfo temp = BattleHUDRef->GetActionByIndex(0);
+		SpawnedPolymon->SR_StartAction(0, temp);
 	}
 }
 void ABattlePC::Action2()
 {
 	if (SpawnedPolymon != nullptr)
 	{
-		SpawnedPolymon->SR_StartAction(1);
+		FActionInfo temp = BattleHUDRef->GetActionByIndex(1);
+		SpawnedPolymon->SR_StartAction(1, temp);
 	}
 }
 void ABattlePC::Action3()
 {
 	if (SpawnedPolymon != nullptr)
 	{
-		SpawnedPolymon->SR_StartAction(2);
+		FActionInfo temp = BattleHUDRef->GetActionByIndex(2);
+		SpawnedPolymon->SR_StartAction(2, temp);
 	}
 }
 void ABattlePC::Action4()
 {
 	if (SpawnedPolymon != nullptr)
 	{
-		SpawnedPolymon->SR_StartAction(3);
-	}
-}
-void ABattlePC::Action5()
-{
-	if (SpawnedPolymon != nullptr)
-	{
-		SpawnedPolymon->SR_StartAction(4);
-	}
-}
-void ABattlePC::Action6()
-{
-	if (SpawnedPolymon != nullptr)
-	{
-		SpawnedPolymon->SR_StartAction(5);
+		FActionInfo temp = BattleHUDRef->GetActionByIndex(3);
+		SpawnedPolymon->SR_StartAction(3, temp);
 	}
 }
 
